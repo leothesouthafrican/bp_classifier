@@ -2,3 +2,5 @@ env/
 .DS_Store
 images/
 __pycache__/
+csv_output/
+config.py

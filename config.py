@@ -1,5 +1,0 @@
-client_id="KOuKiMmTZ9BjCneAhV_OAQ"
-client_secret="HeMyfpAGx1C4S_HTgjOkMYBoo7Cc0w"
-password="re**Celia4040"
-user_agent="longcovid"
-username="_leothesouthafrican_"
