@@ -4,3 +4,5 @@ images/
 __pycache__/
 csv_output/
 config.py
+resized_images/
+images/
