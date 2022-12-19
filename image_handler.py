@@ -137,8 +137,8 @@ class DownloadImageMorphMarket:
         # Make a request to the website and retrieve the HTML
         
         #cap the number of pages to 15
-        if int(num_pages) > 25:
-            num_pages = 25
+        if int(num_pages) > 30:
+            num_pages = 30
         #create a folder within the destination folder for the gene
         self.check_destination_folder('{}/{}'.format(self.destination_folder, self.gene))
 
@@ -174,8 +174,6 @@ class DownloadImageMorphMarket:
                 except:
                     os.remove('images/{}/{}'.format(path, image))
 
-
-
     def resize_images_inplace(self, path, size):
         for gene in tqdm.tqdm(os.listdir('images/'), total = len(os.listdir('images/')), desc='Resizing Images of {}'.format(self.gene)):
             for image in os.listdir('images/{}'.format(path)):
@@ -185,10 +183,11 @@ class DownloadImageMorphMarket:
 
 if __name__ == "__main__":
 
-    morphs = ["clown","banana", "bumblebee","mojave", "bamboo", "gravel", "enchi", "spider", "phantom","albino", "cinnamon", "black%20pastel"]
+    morphs = ["albino", "butter", "ghi", "hypo","lesser","mojave","piebald","spider","clown","banana",]
     for morph in morphs:
         mm = DownloadImageMorphMarket(destination_folder='images', gene=morph)
         number_pages = mm.get_num_pages()
         mm.scrape_images(number_pages)
+    for morph in morphs:
         mm.check_image_size(path=morph, size=(225, 190))
         mm.resize_images_inplace(path=morph, size=(192, 192))
