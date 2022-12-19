@@ -110,9 +110,10 @@ class DownloadImageReddit:
                 print('Could not resize image')
 
 class DownloadImageMorphMarket:
-    def __init__(self, destination_folder, gene):
+    def __init__(self, destination_folder, gene, snake_type = 'bp'):
         self.destination_folder = destination_folder
         self.gene = gene
+        self.snake_type = snake_type
 
     def check_destination_folder(self,folder):
         #if folder images does not exist, create it
@@ -121,7 +122,10 @@ class DownloadImageMorphMarket:
 
     def get_num_pages(self):
         # Make a request to the website and retrieve the HTML
-        response = requests.get('https://www.morphmarket.com/eu/c/reptiles/pythons/ball-pythons/gene/{}?epoch=22&page=1'.format(self.gene))
+        if self.snake_type == 'bp':
+            response = requests.get('https://www.morphmarket.com/eu/c/reptiles/pythons/ball-pythons/gene/{}?epoch=22&page=1'.format(self.gene))
+        elif self.snake_type == 'cs':
+            response = requests.get('https://www.morphmarket.com/eu/c/reptiles/colubrids/corn-snakes/gene/{}?epoch=22&page=1'.format(self.gene))
         html = response.text
         soup = BeautifulSoup(html, 'html.parser')
 
@@ -134,6 +138,7 @@ class DownloadImageMorphMarket:
         return num_pages
 
     def scrape_images(self, num_pages):
+
         # Make a request to the website and retrieve the HTML
         
         #cap the number of pages to 15
@@ -144,7 +149,10 @@ class DownloadImageMorphMarket:
 
         for i in tqdm.tqdm(range(1, int(num_pages)+1), total=int(num_pages), desc='Downloading Images of {}'.format(self.gene), unit='page'):
             page = i
-            url = 'https://www.morphmarket.com/eu/c/reptiles/pythons/ball-pythons/gene/{}?epoch=22&page={}'.format(self.gene, i)
+            if self.snake_type == 'bp':
+                url = 'https://www.morphmarket.com/eu/c/reptiles/pythons/ball-pythons/gene/{}?epoch=22&page={}'.format(self.gene, i)
+            elif self.snake_type == 'cs':
+                url = 'https://www.morphmarket.com/eu/c/reptiles/colubrids/corn-snakes/gene/{}?epoch=22&page={}'.format(self.gene, i)
             response = requests.get(url)
             html = response.text
             soup = BeautifulSoup(html, 'html.parser')
@@ -183,11 +191,12 @@ class DownloadImageMorphMarket:
 
 if __name__ == "__main__":
 
-    morphs = ["albino", "butter", "ghi", "hypo","lesser","mojave","piebald","spider","clown","banana",]
+    morphs = ["amelanistic", "diffused", "motley","stripe","tessera","anerythristic","charcoal","scaleless","cinder","hypo"]
     for morph in morphs:
-        mm = DownloadImageMorphMarket(destination_folder='images', gene=morph)
+        mm = DownloadImageMorphMarket(destination_folder='images', gene=morph, snake_type='cs')
         number_pages = mm.get_num_pages()
         mm.scrape_images(number_pages)
     for morph in morphs:
         mm.check_image_size(path=morph, size=(225, 190))
+    for morph in morphs:
         mm.resize_images_inplace(path=morph, size=(192, 192))
